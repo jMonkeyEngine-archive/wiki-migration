@@ -1,17 +1,68 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    abstract_type (0.0.7)
+    adamantium (0.2.0)
+      ice_nine (~> 0.11.0)
+      memoizable (~> 0.4.0)
+    addressable (2.4.0)
+    anima (0.3.0)
+      abstract_type (~> 0.0.7)
+      adamantium (~> 0.2)
+      equalizer (~> 0.0.11)
     ansi (1.5.0)
     ast (2.1.0)
+    call_sheet (0.4.0)
+      kleisli
+      wisper (>= 1.6.0)
+    domain_name (0.5.25)
+      unf (>= 0.0.5, < 1.0.0)
+    dry-auto_inject (0.1.0)
+    dry-component (0.0.1)
+      dry-auto_inject (~> 0.1)
+      dry-configurable (~> 0.1)
+      dry-container (~> 0.2, >= 0.2.7)
+      inflecto (>= 0.0.2)
+      memoizable (~> 0.4)
+    dry-configurable (0.1.2)
+      thread_safe
+    dry-container (0.2.7)
+      dry-configurable (= 0.1.2)
+      thread_safe
+    equalizer (0.0.11)
+    http (0.9.8)
+      addressable (~> 2.3)
+      http-cookie (~> 1.0)
+      http-form_data (~> 1.0.1)
+      http_parser.rb (~> 0.6.0)
+    http-cookie (1.0.2)
+      domain_name (~> 0.5)
+    http-form_data (1.0.1)
+    http_parser.rb (0.6.0)
+    ice_nine (0.11.1)
+    inflecto (0.0.2)
+    kleisli (0.2.7)
+    memoizable (0.4.2)
+      thread_safe (~> 0.3, >= 0.3.1)
     oga (1.3.1)
       ast
       ruby-ll (~> 2.1)
     ruby-ll (2.1.2)
       ansi
       ast
+    thread_safe (0.3.5)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.1)
+    wisper (1.6.1)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  anima
+  call_sheet
+  dry-component
+  http
+  kleisli
   oga
