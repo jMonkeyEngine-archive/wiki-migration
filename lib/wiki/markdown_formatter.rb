@@ -8,10 +8,9 @@ module Wiki
       ))
     end
 
-    def add_frontmatter(page, layout: 'post')
+    def add_frontmatter(page)
       <<-TMP
 ---
-layout: #{layout}
 title: #{page.title}
 ---
 #{page.body}
