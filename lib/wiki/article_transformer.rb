@@ -9,7 +9,8 @@ module Wiki
       Right(Page.new({
                          title: Try { doc.at_css('.sectionedit1').text }.value,
                          body: doc.to_xml.strip,
-                         path: input.fetch(:path)
+                         path: input.fetch(:path),
+                         format: 'html'
                      }))
     end
 
