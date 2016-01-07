@@ -21,6 +21,9 @@ require 'wiki/markdown_formatter'
 module Wiki
   Container.register(:root_path, Pathname('.'))
   Container.register(:build_path, Container[:root_path].join('build'))
+  Container.register(:resource_path, Container[:build_path].join('resources'))
+  Container.register(:naming_strategy, Wiki::ArticleTransformer::Nested)
+
   Container.register(:logger, Logger.new(STDOUT).tap { |logger| logger.level = Logger::DEBUG })
   Container.register(:load_file, LoadFile.new)
   Container.register(:parse_xml, ParseXML.new)
@@ -35,14 +38,19 @@ compile_file = CallSheet(container: Wiki::Container) {
   step(:markdown_formatter)
 }
 
-root = Pathname('build')
+build_path = Pathname('build')
+
+naming_strategy = Wiki::Container[:naming_strategy]
 
 Dir[Pathname(__FILE__).dirname.join('dump', '*.html')].each do |file|
 
   compile_file.call(file) do |result|
     result.success do |page|
-      path = Pathname(file)
-      root.join(path.basename(path.extname).to_s + '.md').write(page.body)
+      puts page.path
+
+      path = build_path.join(naming_strategy.call(page.path) + '.md')
+      path.dirname.mkpath
+      path.write(page.body)
     end
   end
 end

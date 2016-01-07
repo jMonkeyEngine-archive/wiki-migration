@@ -1,6 +1,18 @@
+require 'wiki/path'
 module Wiki
   class ArticleTransformer
-    include Import[:logger, :build_path]
+    include Import[:logger, :build_path, :naming_strategy]
+    class Nested
+      def self.call(wiki_path)
+        File.join(*wiki_path.segments)
+      end
+    end
+
+    class Dashed
+      def self.call(wiki_path)
+        wiki_path.segments.join('-')
+      end
+    end
 
     def call(input)
       doc = input.fetch(:body)
@@ -19,14 +31,9 @@ module Wiki
       return input if input.kind_of?(Hash)
       return Params(input.query) if input.kind_of?(Addressable::URI)
       if input.kind_of?(String)
-        return Params(URL(input))
+        return Params(Wiki::URL(input))
       end
       raise "cannot convert #{input.inspect} to Params"
-    end
-
-    def URL(url)
-      return url if url.kind_of?(Addressable::URI)
-      Addressable::URI.parse(url)
     end
 
     private
@@ -51,8 +58,11 @@ module Wiki
 
         media_url.scheme = url.scheme
         media_url.host = url.host
-        logger.debug("downloading #{media_url}")
-        response = follow_redirects(http.get(media_url))
+
+        unless resource_path.exist?
+          logger.debug("downloading #{media_url}")
+          response = follow_redirects(http.get(media_url))
+        end
 
 
         new_path = "/resources/#{filename}"
@@ -96,9 +106,8 @@ module Wiki
     end
 
     def wiki_url2filename(url)
-      url = URL(url)
-      url.path = '/' + url.path[10..-1].tr(':', '-') + '.html'
-      url.to_s
+      wiki_path = Wiki::Path.from_url(url)
+      '/' + naming_strategy.call(wiki_path).to_s + '.html'
     end
   end
 end

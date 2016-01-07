@@ -8,7 +8,7 @@ module Wiki
       path = root_path.join(path) if path.relative?
 
       Right({
-                path: path,
+                path: Wiki::Path.new(path.basename(path.extname).to_s.split('-')),
                 body: path.read
             })
     rescue Errno::ENOENT => ex
