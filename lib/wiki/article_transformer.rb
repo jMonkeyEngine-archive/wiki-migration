@@ -1,7 +1,7 @@
 require 'wiki/path'
 module Wiki
   class ArticleTransformer
-    include Import[:logger, :build_path, :naming_strategy]
+    include Import[:logger, :naming_strategy, :resource_path]
     class Nested
       def self.call(wiki_path)
         File.join(*wiki_path.segments)
@@ -53,13 +53,13 @@ module Wiki
         logger.debug("media_url #{media_url}")
 
         filename = Pathname(media_url.path).basename.to_s.tr(':', '-')
-        resource_path = build_path.join('resources', filename)
+        resource_file_path = resource_path.join(filename)
 
 
         media_url.scheme = url.scheme
         media_url.host = url.host
 
-        unless resource_path.exist?
+        unless resource_file_path.exist?
           logger.debug("downloading #{media_url}")
           response = follow_redirects(http.get(media_url))
         end
@@ -71,7 +71,7 @@ module Wiki
         a.css('img').each do |img|
           img.set('src', new_path)
         end
-        resource_path.write(response.to_s)
+        resource_file_path.write(response.to_s)
       }
       if result.exception
         logger.error("could not transform #{a.to_xml}")
