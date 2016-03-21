@@ -71,6 +71,9 @@ module Wiki
         a.css('img').each do |img|
           img.set('src', new_path)
         end
+        if !resource_file_path.dirname.exist?
+          resource_file_path.mkpath
+        end
         resource_file_path.write(response.to_s)
       }
       if result.exception
